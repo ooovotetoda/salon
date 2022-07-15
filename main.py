@@ -5,6 +5,7 @@ from aiogram.utils import executor
 
 from config import BOT_TOKEN
 from messages import MESSAGES
+from quickstart import add
 import keyboards as kb
 
 bot = Bot(BOT_TOKEN)
@@ -32,6 +33,10 @@ async def process_callback_cancel(callback_query: types.CallbackQuery):
 async def process_callback_info(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Информация!')
+
+@dp.message_handler(commands=['add'])
+async def process_callback_info(message: types.Message):
+    add()
 
 
 if __name__ == '__main__':
