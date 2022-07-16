@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
+from datetime import date, timedelta
 
 greet_kb = InlineKeyboardMarkup()
 entry_btn = InlineKeyboardButton('📝 Запись на приём', callback_data='entry')
@@ -14,4 +15,32 @@ masters_kb = InlineKeyboardMarkup()
 petrova_btn = InlineKeyboardButton('💆‍♀️ Петрова Н. А. - Парикмахер-универсал', callback_data='petrova')
 vorojkova_btn = InlineKeyboardButton('💆‍♀️ Ворожкова С. Н. - Мастер маникюра', callback_data='vorojkova')
 vasileva_btn = InlineKeyboardButton('💆‍♀️ Васильева Е. Г. - Визажист', callback_data='vasileva')
-masters_kb = InlineKeyboardMarkup().add(petrova_btn).add(vorojkova_btn).add(vasileva_btn)
+masters_kb.add(petrova_btn).add(vorojkova_btn).add(vasileva_btn)
+
+date_kb = InlineKeyboardMarkup()
+today_btn = InlineKeyboardButton('🕖 На сегодня', callback_data='today')
+tomorrow_btn = InlineKeyboardButton('🕜 На завтра', callback_data='tomorrow')
+aftomorrow_btn = InlineKeyboardButton('🕐 На послезавтра', callback_data='aftomorrow')
+calendar_btn = InlineKeyboardButton('📅 Календарь дат', callback_data='calendar')
+ondate_btn = InlineKeyboardButton('🔢 На дату', callback_data='ondate')
+dateback_btn = InlineKeyboardButton('◀️Возврат', callback_data='dateback')
+date_kb.add(today_btn, calendar_btn).add(tomorrow_btn, ondate_btn).add(aftomorrow_btn, dateback_btn)
+
+first_day = date.today()
+second_day = first_day + timedelta(days=1)
+third_day = first_day + timedelta(days=2)
+fourth_day = first_day + timedelta(days=3)
+fifth_day = first_day + timedelta(days=4)
+sixth_day = first_day + timedelta(days=5)
+seventh_day = first_day + timedelta(days=6)
+
+week_kb = InlineKeyboardMarkup()
+first_day_btn = InlineKeyboardButton(f'🔔 Запись на {first_day} ', callback_data='first_day')
+second_day_btn = InlineKeyboardButton(f'🔔 Запись на {second_day} ', callback_data='second_day')
+third_day_btn = InlineKeyboardButton(f'🔔 Запись на {third_day} ', callback_data='third_day')
+fourth_day_btn = InlineKeyboardButton(f'🔔 Запись на {fourth_day} ', callback_data='fourth_day')
+fifth_day_btn = InlineKeyboardButton(f'🔔 Запись на {fifth_day} ', callback_data='fifth_day')
+sixth_day_btn = InlineKeyboardButton(f'🔔 Запись на {sixth_day} ', callback_data='sixth_day')
+seventh_day_btn = InlineKeyboardButton(f'🔔 Запись на {seventh_day} ', callback_data='seventh_day')
+week_kb.add(first_day_btn).add(second_day_btn).add(third_day_btn).add(fourth_day_btn).add(fifth_day_btn).add(
+    sixth_day_btn).add(seventh_day_btn)

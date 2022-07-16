@@ -14,9 +14,6 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 def add():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -37,19 +34,8 @@ def add():
 
     try:
         service = build('calendar', 'v3', credentials=creds)
-
-            # Call the Calendar API
-        # now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        # print('Getting the upcoming 10 events')
-        # events_result = service.events().list(calendarId='primary', timeMin=now,
-        #                                       maxResults=10, singleEvents=True,
-        #                                       orderBy='startTime').execute()
-        # events = events_result.get('items', [])
-
         event = {
             'summary': 'Стрижка',
-            # 'location': '800 Howard St., San Francisco, CA 94103',
-            # 'description': 'A chance to hear more about Google\'s developer products.',
             'start': {
                 'dateTime': '2022-07-20T09:00:00',
                 'timeZone': 'Europe/Moscow',
@@ -58,37 +44,9 @@ def add():
                 'dateTime': '2022-07-21T17:00:00',
                 'timeZone': 'Europe/Moscow',
             },
-            # 'recurrence': [
-            #     'RRULE:FREQ=DAILY;COUNT=2'
-            # ],
-            # 'attendees': [
-            #     {'email': 'dima.rolick22@gmail.com'},
-            #     {'email': 'dima.rolick22@gmail.com'},
-            # ],
-            # 'reminders': {
-            #     'useDefault': False,
-            #     'overrides': [
-            #         {'method': 'email', 'minutes': 24 * 60},
-            #         {'method': 'popup', 'minutes': 10},
-            #     ],
-            # },
         }
 
         event = service.events().insert(calendarId='primary', body=event).execute()
 
-        # if not events:
-        #     print('No upcoming events found.')
-        #     return
-
-            # Prints the start and name of the next 10 events
-        # for event in events:
-        #     start = event['start'].get('dateTime', event['start'].get('date'))
-        #     print(start, event['summary'])
-
     except HttpError as error:
         print('An error occurred: %s' % error)
-
-
-
-# if __name__ == '__main__':
-#     main()
