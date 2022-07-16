@@ -45,57 +45,19 @@ async def process_callback_info(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Информация!')
 
-
-@dp.callback_query_handler(lambda c: c.data == 'today')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'tomorrow')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'aftomorrow')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'calendar')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'ondate')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'dateback')
-async def process_callback_ondate(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id,
-                           'Выберите дату календаря:',
-                           reply_markup=kb.week_kb)
-
-@dp.callback_query_handler(lambda c: c.data == 'petrova' or 'vorojkova' or 'vasileva')
+@dp.callback_query_handler(lambda c: c.data == 'petrova' or c.data == 'vorojkova' or c.data == 'vasileva')
 async def process_callback_master(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id,
                            'Выберите дату записи:',
                            reply_markup=kb.date_kb)
 
-
+@dp.callback_query_handler(lambda c: c.data == 'on_date')
+async def process_callback_on_date(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id,
+                           'Выберите дату календаря:',
+                           reply_markup=kb.week_kb)
 
 @dp.message_handler(commands=['add'])
 async def process_add_event(message: types.Message):
