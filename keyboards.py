@@ -1,7 +1,8 @@
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from weekdays_converter import convert
 
 greet_kb = InlineKeyboardMarkup()
 entry_btn = InlineKeyboardButton('📝 Запись на приём', callback_data='entry')
@@ -35,12 +36,12 @@ sixth_day = first_day + timedelta(days=5)
 seventh_day = first_day + timedelta(days=6)
 
 week_kb = InlineKeyboardMarkup()
-first_day_btn = InlineKeyboardButton(f'🔔 Запись на {first_day} ', callback_data='first_day')
-second_day_btn = InlineKeyboardButton(f'🔔 Запись на {second_day} ', callback_data='second_day')
-third_day_btn = InlineKeyboardButton(f'🔔 Запись на {third_day} ', callback_data='third_day')
-fourth_day_btn = InlineKeyboardButton(f'🔔 Запись на {fourth_day} ', callback_data='fourth_day')
-fifth_day_btn = InlineKeyboardButton(f'🔔 Запись на {fifth_day} ', callback_data='fifth_day')
-sixth_day_btn = InlineKeyboardButton(f'🔔 Запись на {sixth_day} ', callback_data='sixth_day')
-seventh_day_btn = InlineKeyboardButton(f'🔔 Запись на {seventh_day} ', callback_data='seventh_day')
+first_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday())} - {first_day}', callback_data='first_day')
+second_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 1)} - {second_day} ', callback_data='second_day')
+third_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 2)} - {third_day} ', callback_data='third_day')
+fourth_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 3)} - {fourth_day} ', callback_data='fourth_day')
+fifth_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 4)} - {fifth_day} ', callback_data='fifth_day')
+sixth_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 5)} - {sixth_day} ', callback_data='sixth_day')
+seventh_day_btn = InlineKeyboardButton(f'🔔 Запись на {convert(datetime.today().weekday() + 6)} - {seventh_day} ', callback_data='seventh_day')
 week_kb.add(first_day_btn).add(second_day_btn).add(third_day_btn).add(fourth_day_btn).add(fifth_day_btn).add(
     sixth_day_btn).add(seventh_day_btn)
