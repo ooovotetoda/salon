@@ -1,14 +1,19 @@
 import asyncio
 import logging
+import datetime
+
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils.markdown import text
 from aiogram.utils import executor
+
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from config import BOT_TOKEN
 from messages import MESSAGES
+from utils import MessageStates
 from quickstart import add
 import keyboards as kb
 
@@ -18,7 +23,7 @@ logging.basicConfig(format=u'%(filename)+13s [ LINE:%(lineno)-4s] %(levelname)-8
 
 
 bot = Bot(BOT_TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=MemoryStorage())
 
 dp.middleware.setup(LoggingMiddleware())
 
@@ -52,17 +57,40 @@ async def process_callback_master(callback_query: types.CallbackQuery):
                            'Выберите дату записи:',
                            reply_markup=kb.date_kb)
 
-@dp.callback_query_handler(lambda c: c.data == 'on_date')
-async def process_callback_on_date(callback_query: types.CallbackQuery):
+@dp.callback_query_handler(lambda c: c.data == 'calendar')
+async def process_callback_calendar(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id,
                            'Выберите дату календаря:',
                            reply_markup=kb.week_kb)
 
+@dp.callback_query_handler(lambda c: c.data == 'on_date')
+async def process_callback_on_date(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, MESSAGES['on_date'])
+    state = dp.current_state(user=callback_query.from_user.id)
+    await state.set_state(MessageStates.WAITING_STATE[0])
+
+@dp.message_handler(state=MessageStates.WAITING_STATE[0])
+async def process_wait(message: types.Message):
+    state = dp.current_state(user=message.from_user.id)
+    if len(message.text.split('-')) == 3:
+        try:
+            datetime.datetime.strptime(message.text, '%Y-%m-%d')
+            await bot.send_message(message.from_user.id, 'Всё верно')
+            await state.reset_state()
+        except Exception:
+            await bot.send_message(message.from_user.id, 'Неверный формат')
+    else:
+        await bot.send_message(message.from_user.id, 'Неверный формат')
+
 @dp.message_handler(commands=['add'])
 async def process_add_event(message: types.Message):
     add()
 
+@dp.message_handler()
+async def process_add_event(message: types.Message):
+    await bot.send_message(message.from_user.id, 'Ничего')
 
 async def shutdown(dispatcher: Dispatcher):
     await dispatcher.storage.close()
