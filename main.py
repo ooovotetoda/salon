@@ -50,12 +50,26 @@ async def process_callback_info(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Информация!')
 
-@dp.callback_query_handler(lambda c: c.data == 'petrova' or c.data == 'vorojkova' or c.data == 'vasileva')
+@dp.callback_query_handler(lambda c: c.data.startswith('petrova' or 'vorojkova' or 'vasileva'))
 async def process_callback_master(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id,
                            'Выберите дату записи:',
                            reply_markup=kb.date_kb)
+
+@dp.callback_query_handler(lambda c: c.data.startswith('today' or 'tomorrow' or 'after_tomorrow'))
+async def process_callback_date(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id,
+                           'Выберите время записи:',
+                           reply_markup=kb.time_kb)
+
+@dp.callback_query_handler(lambda c: c.data and c.data.startswith('time_1'))
+async def process_callback_date(callback_query: types.CallbackQuery):
+    time = callback_query.data[-2:]
+    await bot.answer_callback_query(callback_query.id)
+    add(time)
+    await bot.send_message(callback_query.from_user.id, 'Запись прошла успешно')
 
 @dp.callback_query_handler(lambda c: c.data == 'calendar')
 async def process_callback_calendar(callback_query: types.CallbackQuery):
@@ -66,10 +80,11 @@ async def process_callback_calendar(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == 'on_date')
 async def process_callback_on_date(callback_query: types.CallbackQuery):
-    await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, MESSAGES['on_date'])
     state = dp.current_state(user=callback_query.from_user.id)
     await state.set_state(MessageStates.WAITING_STATE[0])
+    await callback_query.answer(MessageStates.WAITING_STATE[0])
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, MESSAGES['on_date'])
 
 @dp.message_handler(state=MessageStates.WAITING_STATE[0])
 async def process_wait(message: types.Message):
@@ -84,13 +99,31 @@ async def process_wait(message: types.Message):
     else:
         await bot.send_message(message.from_user.id, 'Неверный формат')
 
+@dp.message_handler(state=MessageStates.WAITING_STATE[0], commands='stop')
+async def process_stop(message: types.Message):
+    state = dp.current_state(user=message.from_user.id)
+    await state.reset_state()
+    await bot.send_message(message.from_user.id, 'Запись на дату отменена')
+    await bot.send_message(message.from_user.id,
+                           'Выберите дату записи:',
+                           reply_markup=kb.date_kb)
+
+@dp.callback_query_handler(lambda c: c.data == 'date_back')
+async def process_callback_date_back(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id,
+                           'Выберите дату записи:',
+                           reply_markup=kb.masters_kb)
+
+
+
 @dp.message_handler(commands=['add'])
 async def process_add_event(message: types.Message):
     add()
 
 @dp.message_handler()
 async def process_add_event(message: types.Message):
-    await bot.send_message(message.from_user.id, 'Ничего')
+    await message.answer(message.text)
 
 async def shutdown(dispatcher: Dispatcher):
     await dispatcher.storage.close()

@@ -13,7 +13,7 @@ from googleapiclient.errors import HttpError
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
-def add():
+def add(time):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -37,11 +37,11 @@ def add():
         event = {
             'summary': 'Стрижка',
             'start': {
-                'dateTime': '2022-07-20T09:00:00',
+                'dateTime': f'2022-07-20T{time}:00:00',
                 'timeZone': 'Europe/Moscow',
             },
             'end': {
-                'dateTime': '2022-07-21T17:00:00',
+                f'dateTime': f'2022-07-21T{int(time) + 1}:00:00',
                 'timeZone': 'Europe/Moscow',
             },
         }
